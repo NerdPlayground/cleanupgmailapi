@@ -1,3 +1,9 @@
+from __future__ import print_function
+from gmail.common import get_labels
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from gmail.authentication import credentials
+
 def remove_header(read_from):
     for read_line in read_from:
         read_line=read_line.strip()
@@ -55,11 +61,45 @@ def custom_labels():
         print(*emails,sep="\n")
         print()
 
+def delete_label(label_id):
+    try:
+        service=build('gmail','v1',credentials=credentials())
+        results=service.users().labels().delete(
+            userId='me',id=label_id
+        ).execute()
+    except HttpError as error:
+        error_message={"error":error._get_reason()}
+        return {"error_message":error_message}
+
+def get_filters():
+    try:
+        service=build('gmail', 'v1', credentials=credentials())
+        filters=service.users().settings().filters().list(
+            userId="me"
+        ).execute()
+        return {"filters":filters}
+    except HttpError as error:
+        error_message={"error":error._get_reason()}
+        return {"error_message":error_message}
+
+def delete_filter(filter_id):
+    try:
+        service=build('gmail', 'v1', credentials=credentials())
+        results=service.users().settings().filters().delete(
+            userId="me",id=filter_id
+        ).execute()
+    except HttpError as error:
+        error_message={"error":error._get_reason()}
+        return {"error_message":error_message}
+
 def main():
-    names={"George","Mobisa","Kitawi","Dorobu"}
-    extras="William OR Nalana OR "
-    joined=" OR ".join(names)
-    print(extras+joined)
+    labels=get_labels(type="user").get("labels")
+    for label in labels:
+        delete_label(label.get("id"))
+    
+    filters=get_filters().get("filters").get("filter")
+    for filter in filters:
+        delete_filter(filter.get("id"))
 
 if __name__ == '__main__':
     main()

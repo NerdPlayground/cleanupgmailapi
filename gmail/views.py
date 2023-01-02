@@ -20,7 +20,7 @@ def clean_up_mailbox(request):
             for custom_label,label_emails in custom_labels.items():
                 results=create_label(custom_label)
                 if results.get("error_message")!=None:
-                    return Response(
+                    return Response(# pragma: no cover
                         results.get("error_message"),
                         status=status.HTTP_400_BAD_REQUEST
                     )
@@ -32,7 +32,7 @@ def clean_up_mailbox(request):
                             criteria_from=criteria_from.get("criteria_from")
                             extras=criteria_from+" OR "
                         else:
-                            return Response(
+                            return Response(# pragma: no cover
                                 criteria_from.get("error_message"),
                                 status=status.HTTP_400_BAD_REQUEST
                             )
@@ -48,12 +48,12 @@ def clean_up_mailbox(request):
                         if results.get("results")!=None:
                             counter+=1
                         else:
-                            return Response(
+                            return Response(# pragma: no cover
                                 results.get("error_message"),
                                 status=status.HTTP_400_BAD_REQUEST
                             )
                     else:
-                        return Response(
+                        return Response(# pragma: no cover
                             filter.get("error_message"),
                             status=status.HTTP_400_BAD_REQUEST
                         )
@@ -62,12 +62,12 @@ def clean_up_mailbox(request):
             }
             return Response(message,status=status.HTTP_200_OK)
         else:
-            return Response(
+            return Response(# pragma: no cover
                 custom_labels.get("error_message"),
                 status=status.HTTP_400_BAD_REQUEST
             )
     else:
-        return Response(
+        return Response(# pragma: no cover
             ungrouped_emails.get("error_message"),
             status=status.HTTP_400_BAD_REQUEST
         )
@@ -81,7 +81,7 @@ def labels(request):
             "labels":labels.get("labels")
         }
         return Response(message,status=status.HTTP_200_OK)
-    return Response(labels.get("error_message"),status=status.HTTP_400_BAD_REQUEST)
+    return Response(labels.get("error_message"),status=status.HTTP_400_BAD_REQUEST)# pragma: no cover
 
 @api_view()
 def emails(request):
@@ -92,7 +92,7 @@ def emails(request):
             "messages":emails.get("messages")
         }
         return Response(message,status=status.HTTP_200_OK)
-    return Response(emails.get("error_message"),status=status.HTTP_400_BAD_REQUEST)
+    return Response(emails.get("error_message"),status=status.HTTP_400_BAD_REQUEST)# pragma: no cover
 
 @api_view()
 def senders(request):
@@ -104,4 +104,4 @@ def senders(request):
             "senders":senders.get("senders"),
         }
         return Response(message,status=status.HTTP_200_OK)
-    return Response(senders.get("error_message"),status=status.HTTP_400_BAD_REQUEST)
+    return Response(senders.get("error_message"),status=status.HTTP_400_BAD_REQUEST)# pragma: no cover

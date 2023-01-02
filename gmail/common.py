@@ -25,7 +25,7 @@ def get_labels(type="all"):
             labels.clear()
             labels.extend(requested_labels)
         return {"labels":labels}
-    except HttpError as error:
+    except HttpError as error:# pragma: no cover
         error_message={"error":error._get_reason()}
         return {"error_message":error_message}
 
@@ -37,7 +37,7 @@ def get_label(label_id):
         service=build('gmail', 'v1', credentials=credentials())
         label=service.users().labels().get(userId="me",id=label_id).execute()
         return {"label":label}
-    except HttpError as error:
+    except HttpError as error:# pragma: no cover
         error_message={"error":error._get_reason()}
         return {"error_message":error_message}
 
@@ -48,7 +48,7 @@ def get_message(message_id):
             userId="me",id=message_id
         ).execute()
         return {"message":results}
-    except HttpError as error:
+    except HttpError as error:# pragma: no cover
         error_message={"error":error._get_reason()}
         return {"error_message":error_message}
 
@@ -71,7 +71,7 @@ def get_emails(labels,query=""):
             if "messages" in results:
                 messages.extend(results.get("messages"))
         return {"messages": messages}
-    except HttpError as error:
+    except HttpError as error:# pragma: no cover
         error_message={"error":error._get_reason()}
         return {"error_message":error_message}
 
@@ -87,12 +87,12 @@ def clean_emails(emails):
                     message_labels=received_message.get("message").get("labelIds")
                     if not any(label in message_labels for label in custom_labels):
                         ungrouped_emails.append(message_details)
-                else:
+                else:# pragma: no cover
                     return {"error_message":received_message.get("error_message")}
             return {"messages":ungrouped_emails}
-        else:
+        else:# pragma: no cover
             return {"error_message":custom_labels.get("error_message")}
-    else:
+    else:# pragma: no cover
         return {"error_message":emails.get("error_message")}
 
 def get_senders(emails):
@@ -105,10 +105,10 @@ def get_senders(emails):
                 sender=filter(lambda header: header['name'] == 'From',headers)
                 sender=list(sender)[0]
                 senders[sender['value']]=senders.get(sender['value'],0)+1
-            else:
+            else:# pragma: no cover
                 return {"error_message":received_message.get("error_message")}
         return {"senders":senders}
-    return {"error_message":emails.get("error_message")}
+    return {"error_message":emails.get("error_message")}# pragma: no cover
 
 def clean_senders(senders):
     cleaned_senders=list()
@@ -166,8 +166,8 @@ def create_label(label):
         error_message={"error":error._get_reason()}
         if error_message.get("error")=="Label name exists or conflicts":
             contents=get_filters_labels()
-            if contents.get("label")!=None:
-                contents=contents.get("label")
+            if contents.get("contents")!=None:
+                contents=contents.get("contents")
                 if contents.get(label)!=None:
                     return {
                         "label_id":contents.get(label)[0],
@@ -176,9 +176,9 @@ def create_label(label):
                 else:
                     return create_label(label+" (filtered)")
             else:
-                return {"error_message":contents.get("error_message")}
+                return {"error_message":contents.get("error_message")}# pragma: no cover
         else:
-            return {"error_message":error_message}
+            return {"error_message":error_message}# pragma: no cover
 
 def get_custom_labels(emails):
     labels=dict()
@@ -195,7 +195,7 @@ def get_custom_labels(emails):
                     break
             labels[label]=labels.get(label,set()).union({email})
         return {"labels":labels}
-    return {"error_message":senders.get("error_message")}
+    return {"error_message":senders.get("error_message")}# pragma: no cover
 
 def apply_filter(filter):
     try:
@@ -220,9 +220,9 @@ def apply_filter(filter):
                 userId="me",body=modification_content
             ).execute()
             return {"results":results}
-        else:
+        else:# pragma: no cover
             return {"error_message":emails.get("error_message")}
-    except HttpError as error:
+    except HttpError as error:# pragma: no cover
         error_message={"error":error._get_reason()}
         return {"error_message":error_message}
 
@@ -233,7 +233,7 @@ def get_filter(filter_id):
             userId="me",id=filter_id
         ).execute()
         return filter
-    except HttpError as error:
+    except HttpError as error:# pragma: no cover
         error_message={"error":error._get_reason()}
         return {"error_message":error_message}
 
@@ -241,8 +241,7 @@ def create_filter(contents):
     try:
         filter={
             "criteria":{
-                "from":contents.get("from"),
-                "to":"studytime023@gmail.com"
+                "from":contents.get("from")
             },
             "action":{
                 "addLabelIds":[contents.get("label")],
@@ -254,7 +253,7 @@ def create_filter(contents):
             userId="me",body=filter
         ).execute()
         return {"filter":results}
-    except HttpError as error:
+    except HttpError as error:# pragma: no cover
         error_message={"error":error._get_reason()}
         return {"error_message":error_message}
 
@@ -267,7 +266,7 @@ def delete_filter(filter_id):
             userId="me",id=filter_id
         ).execute()
         return {"criteria_from":criteria_from}
-    except HttpError as error:
+    except HttpError as error:# pragma: no cover
         error_message={"error":error._get_reason()}
         return {"error_message":error_message}
 
@@ -284,9 +283,9 @@ def get_filters_labels():
                 if label.get("label"):
                     label=label.get("label").get("name")
                     contents[label]=(label_id,filter.get("id"))
-                else:
+                else:# pragma: no cover
                     return {"error_message":label.get("error_message")}
         return {"contents":contents}
-    except HttpError as error:
+    except HttpError as error:# pragma: no cover
         error_message={"error":error._get_reason()}
         return {"error_message":error_message}

@@ -1,0 +1,8 @@
+[run]
+source= gmail/,
+omit=
+    venv
+    */test/*
+    */migrations/*
+    */__init__.py
+    gmail/authentication.py
