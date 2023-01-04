@@ -226,6 +226,17 @@ def get_filter(filter_id):
         error_message={"error":error._get_reason()}
         return {"error_message":error_message}
 
+def get_filters():
+    try:
+        service=build('gmail', 'v1', credentials=credentials())
+        filters=service.users().settings().filters().list(
+            userId="me"
+        ).execute()
+        return {"filters":filters}
+    except HttpError as error:# pragma: no cover
+        error_message={"error":error._get_reason()}
+        return {"error_message":error_message}
+
 def create_filter(contents):
     try:
         filter={

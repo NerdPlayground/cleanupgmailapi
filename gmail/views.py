@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from gmail.common import (
     get_emails,get_labels,get_senders,get_custom_labels,
-    clean_emails,create_label,create_filter,delete_filter,
-    apply_filter,
+    clean_emails,create_label,get_filters,create_filter,
+    delete_filter,apply_filter,
 )
 
 @api_view()
@@ -80,19 +80,31 @@ def labels(request):
             "count":len(labels.get("labels")),
             "labels":labels.get("labels")
         }
-        return Response(message,status=status.HTTP_200_OK)
-    return Response(labels.get("error_message"),status=status.HTTP_400_BAD_REQUEST)# pragma: no cover
+        return Response(
+            message,
+            status=status.HTTP_200_OK
+        )
+    return Response(# pragma: no cover
+        labels.get("error_message"),
+        status=status.HTTP_400_BAD_REQUEST
+    )
 
 @api_view()
-def emails(request):
-    emails=get_emails(["INBOX"])
-    if emails.get("messages")!=None:
+def filters(request):
+    filters=get_filters()
+    if filters.get("filters")!=None:
         message={
-            "count":len(emails.get("messages")),
-            "messages":emails.get("messages")
+            "count":len(filters.get("filters").get("filter")),
+            "filters":filters.get("filters").get("filter")
         }
-        return Response(message,status=status.HTTP_200_OK)
-    return Response(emails.get("error_message"),status=status.HTTP_400_BAD_REQUEST)# pragma: no cover
+        return Response(
+            message,
+            status=status.HTTP_200_OK
+        )
+    return Response(# pragma: no cover
+        filters.get("error_message"),
+        status=status.HTTP_400_BAD_REQUEST
+    )
 
 @api_view()
 def senders(request):
@@ -103,5 +115,11 @@ def senders(request):
             "count":len(senders.get("senders")),
             "senders":senders.get("senders"),
         }
-        return Response(message,status=status.HTTP_200_OK)
-    return Response(senders.get("error_message"),status=status.HTTP_400_BAD_REQUEST)# pragma: no cover
+        return Response(
+            message,
+            status=status.HTTP_200_OK
+        )
+    return Response(# pragma: no cover
+        senders.get("error_message"),
+        status=status.HTTP_400_BAD_REQUEST
+    )

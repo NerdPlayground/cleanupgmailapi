@@ -3,12 +3,6 @@ from rest_framework import status
 from gmail.common import get_labels
 from rest_framework.test import APITestCase
 
-class Emails(APITestCase):
-    def test_get_all_account_emails(self):
-        url=reverse("gmail:emails")
-        response=self.client.get(url)
-        self.assertEqual(response.status_code,status.HTTP_200_OK)
-
 class Labels(APITestCase):
     def test_get_all_account_labels(self):
         url=reverse("gmail:labels")
@@ -24,6 +18,12 @@ class Labels(APITestCase):
         labels=get_labels(type="user")
         label=labels.get("labels")[0]
         self.assertEqual(label.get("type"),"user")
+
+class Filters(APITestCase):
+    def test_get_all_account_filters(self):
+        url=reverse("gmail:filters")
+        response=self.client.get(url)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
 
 class Senders(APITestCase):
     def test_get_senders(self):
