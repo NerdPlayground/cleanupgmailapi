@@ -1,5 +1,0 @@
-from django.db import models
-
-class Token(models.Model):
-    user_id=models.CharField(max_length=255)
-    token=models.JSONField()
